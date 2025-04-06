@@ -1,0 +1,43 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Client {
+  id           Int          @id @default(autoincrement())
+  clientNumber String       @unique
+  bills        EnergyBill[]
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+}
+
+model EnergyBill {
+  id                         Int      @id @default(autoincrement())
+  client                     Client   @relation(fields: [clientId], references: [id])
+  clientId                   Int
+  pdfFileName                String?  @unique
+  pdfOriginal                Bytes?
+  referenceMonthCode         String
+  referenceYear              Int
+  referenceMonth             Int
+  energyElectricKwh          Float    @default(0)
+  energyElectricValue        Float    @default(0)
+  energySceeKwh              Float?   @default(0)
+  energySceeValue            Float?   @default(0)
+  energyCompensatedKwh       Float    @default(0)
+  energyCompensatedValue     Float    @default(0)
+  publicLightingContribution Float    @default(0)
+  totalEnergyConsumption     Float    @default(0)
+  totalValueWithoutGD        Float    @default(0)
+  gdSavings                  Float    @default(0)
+  createdAt                  DateTime @default(now())
+  updatedAt                  DateTime @updatedAt
+
+  @@unique([clientId, referenceMonthCode])
+  @@index([referenceYear])
+  @@index([referenceMonth])
+}

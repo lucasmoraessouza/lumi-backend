@@ -1,0 +1,22 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:15
+    container_name: lumi-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root 
+      POSTGRES_DB: lumi-backend
+    ports:
+      - '5439:5432'
+    volumes:
+      - db-data:/var/lib/postgresql/data 
+    networks:
+      - db-network
+
+volumes:
+  db-data:
+
+networks:
+  db-network:
+    driver: bridge
